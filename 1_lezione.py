@@ -1,6 +1,6 @@
-from gestionale.cliente import Cliente, ClienteRecord
-from gestionale.ordini import Ordine, OrdineConSconto, RigaOrdine
-from gestionale.prodotti import Prodotto, crea_prodotto_standard
+from gestionale.core.cliente import Cliente, ClienteRecord
+from gestionale.vendite.ordini import Ordine, OrdineConSconto, RigaOrdine
+from gestionale.core.prodotti import Prodotto, crea_prodotto_standard
 
 print("==================================")
 p1 = Prodotto(name= "Ebook Reader", price= 120, quantity= 1, supplier="AAA" )
@@ -21,12 +21,13 @@ print("--------------------------------------------------------------------")
 #1)
 
 #2)
-from gestionale.prodotti import ProdottoScontato as ps
+from gestionale.core.prodotti import ProdottoScontato as ps
 p3= ps(name="Auricolari", price=230, quantity=1, supplier="ABCC", scontoPercento=0.1)
 print(p3)
 
 #3)
-from gestionale import prodotti, prodotti as p
+from gestionale.core import prodotti
+from gestionale.core import prodotti as p
 
 p4 = prodotti.ProdottoScontato(name="Auricolari", price=230, quantity=1, supplier="ABCC", scontoPercento=0.1)
 

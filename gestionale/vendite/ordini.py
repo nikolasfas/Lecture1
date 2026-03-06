@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from gestionale.cliente import ClienteRecord
-from gestionale.prodotti import ProdottoRecord
+from gestionale.core.cliente import ClienteRecord
+from gestionale.core.prodotti import ProdottoRecord
 
 
 @dataclass
