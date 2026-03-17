@@ -37,5 +37,8 @@ class ClienteRecord:
     email:str
     categoria: str
 
+    def __str__(self):
+        return f"Cliente {self.name} ({self.categoria}) - {self.email}"
+
 if __name__ == "__main__":
     _test_modulo()

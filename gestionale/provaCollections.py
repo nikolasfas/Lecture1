@@ -1,11 +1,11 @@
 import copy
-from collections import Counter
+from collections import Counter, deque
 
 from gestionale.core.cliente import ClienteRecord
 #from builtins import function
 
 from gestionale.core.prodotti import ProdottoRecord
-from gestionale.vendite.ordini import Ordine
+from gestionale.vendite.ordini import Ordine, RigaOrdine
 
 p1 = ProdottoRecord("Laptop", 1200.0)
 p2 = ProdottoRecord("Mouse", 20.0)
@@ -249,4 +249,19 @@ vendite_Gennaio["Laptop"] += 4
 print(f"Nuove vendite Gennaio: {vendite_Gennaio}")
 
 
+# deque
+coda_ordini = deque()
+
+for i in range(1, 10):
+    cliente = ClienteRecord(f"Cliente {i}", f"cliente{i}@polito.it", "Gold")
+    prodotto = ProdottoRecord(f"Prodotto{i}", 100.0+i)
+    ordine = Ordine([RigaOrdine(prodotto, 1)], cliente)
+    coda_ordini.append(ordine)
+
+print(f"Ordini in coda: {len(coda_ordini)}")
+
+while coda_ordini:
+    ordine_corrente = coda_ordini.popleft()
+    print(f"Sto gestendo l'ordine del  cliente: {ordine_corrente.cliente}")
+print(f"Ho processato tutti gli ordini")
 
