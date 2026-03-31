@@ -1,4 +1,5 @@
-from gestionale.core.cliente import Cliente, ClienteRecord
+from gestionale.core.cliente import Cliente
+from gestionale.core.clienti import ClienteRecord
 from gestionale.vendite.ordini import Ordine, OrdineConSconto, RigaOrdine
 from gestionale.core.prodotti import Prodotto, crea_prodotto_standard
 

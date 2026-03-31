@@ -2,10 +2,12 @@
 # 1) Supportare l'arrivo e la gestioone di ordini
 # 2) Quando arriva un nuovo ordine, lo aggiungo ad una coda,
 #       assicurandomi che sia seguita da
+import random
 from collections import deque, Counter, defaultdict
 
-from gestionale.core.cliente import ClienteRecord
-from gestionale.core.prodotti import ProdottoRecord
+from dao.dao import DAO
+from gestionale.core.clienti import ClienteRecord
+from gestionale.core.prodotto import ProdottoRecord
 from gestionale.vendite.ordini import Ordine, RigaOrdine
 
 
@@ -16,6 +18,22 @@ class GestoreOrdine:
         self._ordini_processati = []
         self._statistiche_prodotti = Counter()
         self._ordini_per_categoria = defaultdict(list)
+        self._dao = DAO()
+        self._allP = []
+        self._allC = []
+        self._fill_data()
+
+    def _fill_data(self):
+        # Leggo prodotti e clienti dal  DB, e poi creao degli ordini randomici per testare la mia app
+        self._allP = self._dao.getAllProdotti()
+        self._allC = self._dao.getAllClienti()
+
+        for i in range(10):
+            indexP = random.randint(0, len(self._allP) -1)
+            indexC = random.randint(0, len(self._allC) -1)
+            ordine = Ordine([RigaOrdine(self._allP[indexP], random.randint(1, 5))],
+                            self._allC[indexC])
+            self.add_ordine(ordine)
 
     def add_ordine(self, ordine: Ordine):
 
@@ -24,9 +42,21 @@ class GestoreOrdine:
         print(f"Ordini ancora da evadere: {len(self._ordini_da_processare)}")
 
     def crea_ordine(self, nomeP, prezzoP, quantitaP,
-                    nomeC, mailC, categoriaC):
-        return Ordine([RigaOrdine(ProdottoRecord(nomeP, prezzoP), quantitaP)],
-                      ClienteRecord(nomeC, mailC, categoriaC))
+                    nomeC, emailC, categoriaC):
+
+        prod = ProdottoRecord(nomeP, prezzoP)
+        client = ClienteRecord(nomeC, emailC, categoriaC)
+
+        self._update_DB(prod, client)
+
+        return Ordine([RigaOrdine(prod, quantitaP)],client)
+
+    def _update_DB(self, prod, client):
+        if not self._dao.hasProdotto(prod):
+            self._dao.addProdotto(prod)
+
+        if not self._dao.hasCliente(client):
+            self._dao.addCliente(client)
 
     def processo_prossimo_ordine(self):
         """Questo metodo legge il prossimo ordine in coda e lo gestisce"""
@@ -69,7 +99,7 @@ class GestoreOrdine:
         ordini = []
 
         while self._ordini_da_processare:
-            _, ordine = self.processa_prossimo_ordine()
+            _, ordine = self.processo_prossimo_ordine()
             ordini.append(ordine)
         print("Tutti gli ordini sono stati processati.")
         return ordini

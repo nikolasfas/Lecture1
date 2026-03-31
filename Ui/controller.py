@@ -11,6 +11,13 @@ class Controller:
     def add_ordine(self, e):
         #Prodotto
         nomePstr = self._view._txtInNomeP.value
+        if nomePstr == "":
+            self._view._lvOut.controls.append(
+                ft.Text("Attenzione, il campo nome prodotto non può essere vuoto.", color="red")
+            )
+            self._view.update_page()
+            return
+
         try:
             prezzo = float(self._view._txtInPrezzo.value)
         except ValueError:
@@ -20,6 +27,7 @@ class Controller:
             )
             self._view.update_page()
             return
+
         try:
             quantita = int(self._view._txtInQuantita.value)
         except ValueError:
@@ -30,10 +38,33 @@ class Controller:
             self._view.update_page()
             return
 
-        #Cliente
+        # Cliente
         nomeC = self._view._txtInNomeC.value
+
+        if nomeC == "":
+            self._view._lvOut.controls.append(
+                ft.Text("Attenzione, il campo nome cliente non può essere vuoto.", color="red")
+            )
+            self._view.update_page()
+            return
+
         mail = self._view._txtInMail.value
+
+        if mail == "":
+            self._view._lvOut.controls.append(
+                ft.Text("Attenzione, il campo mail non può essere vuoto.", color="red")
+            )
+            self._view.update_page()
+            return
+
         categoria = self._view._txtInCategoria.value
+
+        if categoria == "":
+            self._view._lvOut.controls.append(
+                ft.Text("Attenzione, il campo categoria non può essere vuoto.", color="red")
+            )
+            self._view.update_page()
+            return
 
         ordine = self._model.crea_ordine(nomePstr, prezzo,
                                          quantita, nomeC,
@@ -56,31 +87,13 @@ class Controller:
         self._view._lvOut.controls.append(
             ft.Text(ordine.riepilogo())
         )
+        self._view._lvOut.controls.append(ft.Text("\n"))
 
         self._view.update_page()
-    def gestisci_ordine(self, e):
-        self._view._lvOut.controls.clear()
-        res, ordine = self._model.processo_prossimo_ordine()
-
-        if res:
-            self._view._lvOut.controls.append(
-                ft.Text("Ordine processato con successo.", color="green")
-            )
-            self._view._lvOut.controls.append(
-                ft.Text(ordine.riepilogo())
-            )
-            self._view.update_page()
-        else:
-            self._view._lvOut.controls.append(
-                ft.Text("Non ci sono ordini in coda.", color="blue")
-            )
-            self._view.update_page()
-
-
 
     def gestisci_ordine(self, e):
         self._view._lvOut.controls.clear()
-        res, ordine = self._model.processo_prossimo_ordine()
+        res, ordine = self._model.processa_prossimo_ordine()
 
         if res:
             self._view._lvOut.controls.append(
@@ -97,30 +110,28 @@ class Controller:
 
     def gestisci_all_ordini(self, e):
         self._view._lvOut.controls.clear()
-        ordini =  self._model.processa_tutti_gli_ordini()
+        ordini = self._model.processa_tutti_gli_ordini()
 
         if not ordini:
             self._view._lvOut.controls.append(
-                ft.Text("Non ci sono ordini in coda.", color="blue")
-            )
-            self._view._lvOut.update_page()
+                ft.Text("Non ci sono ordini in coda.", color="blue"))
+            self._view.update_page()
         else:
             self._view._lvOut.controls.append(ft.Text("\n"))
             self._view._lvOut.controls.append(
-                ft.Text(f"Ho processato correttamente {len(ordini)} ordini.", color="green")
+                ft.Text(f"Ho processato correttamente {len(ordini)} ordini.",
+                        color="green")
             )
             for o in ordini:
                 self._view._lvOut.controls.append(ft.Text("\n"))
-                self._view._lvOut.controls.append(
-                    ft.Text(o.riepilogo())
-                )
-            self._view._lvOut.update_page()
+                self._view._lvOut.controls.append(ft.Text(o.riepilogo()))
+            self._view.update_page()
 
     def stampa_sommario(self, e):
         self._view._lvOut.controls.clear()
         self._view._lvOut.controls.append(
-            ft.Text("Di seguito il sommario dello stato del business.", color="orange"))
-
-        self._view._lvOut.controls.append(self._model.get_riepilogo()
-        )
+            ft.Text("Di seguito il sommario dello stato del business.",
+                    color="orange"))
+        self._view._lvOut.controls.append(
+            ft.Text(self._model.get_riepilogo()))
         self._view.update_page()

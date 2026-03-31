@@ -1,8 +1,8 @@
 
 import flet as ft
 
-from gestionale.controller import Controller
-from gestionale.view import View
+from Ui.controller import Controller
+from Ui.view import View
 
 
 def main(page: ft.Page):
